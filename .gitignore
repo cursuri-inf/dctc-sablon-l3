@@ -1,0 +1,22 @@
+# Python și Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Secrete și configurări locale
+.env
+.env.*
+*.pem
+*.key
+
+# Sistem de operare și editoare
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Arhive
+*.zip
+*.rar
+*.7z

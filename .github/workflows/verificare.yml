@@ -1,0 +1,23 @@
+name: Verificarea L3
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verificare:
+    name: Verificarea depozitului personal
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Verificările (README, despre-mine.md, commit-uri, mesaje, igienă)
+        shell: bash
+        run: python3 tests/check_l3.py all | tee -a "$GITHUB_STEP_SUMMARY"
