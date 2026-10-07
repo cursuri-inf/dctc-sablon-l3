@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   verificare:
+    if: ${{ !github.event.repository.is_template }}   # nu rulează în șablonul din cursuri-inf, doar în depozitele create din el
     name: Verificarea depozitului personal
     runs-on: ubuntu-latest
     timeout-minutes: 5

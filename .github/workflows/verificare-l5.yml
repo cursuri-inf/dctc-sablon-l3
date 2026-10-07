@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   verificare:
+    if: ${{ !github.event.repository.is_template }}   # nu rulează în șablonul din cursuri-inf, doar în depozitele create din el
     name: Notebook-ul L5, rulat de la zero
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -19,14 +20,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      - name: Notebook-ul L5 există?
+        id: exista
+        shell: bash
+        run: |
+          if [ -f notebooks/l5.ipynb ]; then
+            echo "gasit=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "gasit=false" >> "$GITHUB_OUTPUT"
+            echo "Verificarea L5 începe după ce salvezi notebook-ul din laboratorul 5 ca notebooks/l5.ipynb." | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Python
+        if: steps.exista.outputs.gasit == 'true'
         uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
       - name: Bibliotecile notebook-ului
+        if: steps.exista.outputs.gasit == 'true'
         run: pip install --quiet jupyter nbconvert ipykernel pandas numpy matplotlib
 
       - name: Verificările (notebook, rulare de la zero, parametri, date, grafic, formulă, PNG)
+        if: steps.exista.outputs.gasit == 'true'
         shell: bash
         run: python3 tests/check_l5.py all --executa | tee -a "$GITHUB_STEP_SUMMARY"
