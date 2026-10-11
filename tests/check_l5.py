@@ -9,8 +9,8 @@ Utilizare (din rădăcina depozitului): python3 tests/check_l5.py <test>   sau  
                (cu --executa, notebook-ul se rulează din nou de la zero, ca în Actions)
     parametri  cel puțin doi parametri ai temei schimbați față de șablon (unul: 1 p)                              2 p
     date       datele echipei: URL raw spre data/ din depozitul echipei (analiza) sau tema aleasă (explorare)    1 p
-    grafic     o celulă de cod adăugată de tine, cu un grafic afișat (al treilea grafic din notebook)              2 p
-    formula    o celulă de text adăugată de tine, cu o formulă LaTeX care nu este în șablon                         1 p
+    grafic     o celulă de cod adăugată de dumneavoastră, cu un grafic afișat (al treilea grafic din notebook)     2 p
+    formula    o celulă de text adăugată de dumneavoastră, cu o formulă LaTeX care nu este în șablon                1 p
     png        cel puțin o figură PNG pusă în depozit (de exemplu în notebooks/)                            1 p
     all        toate testele, cu tabelul punctelor (Markdown), pentru rezumatul din Actions                      10 p
 Codul de ieșire 0 înseamnă test trecut (la `all`: toate testele trecute). Cu --json, `all` scrie rezultatul ca JSON.
@@ -42,13 +42,16 @@ AMPRENTE = {
   ],
   "text": [
    "0de70887364f",
+   "39b2c5bd7d87",
    "3a19fe62e013",
    "584999c6aec0",
    "661a858c162b",
    "7295a7805d4d",
+   "7927560b00d1",
    "7d80be7f8dcf",
    "a4afe917ce43",
    "b6728d697984",
+   "c334c878ef10",
    "c65fa67a0684",
    "d07f8f7f9ac3"
   ],
@@ -74,10 +77,14 @@ AMPRENTE = {
    "068354520841",
    "14ba46077d49",
    "21b9b0486cf6",
+   "2e2c53fd6781",
    "3d5d4e341e5f",
+   "8d013f9ca221",
    "9279e59a443f",
+   "ad2a97598c70",
    "b4c9324fc0e4",
    "c6287a5a6ab1",
+   "d2b9c91afcdb",
    "df0daf402d73",
    "ec6deb1733a3",
    "ecb7fbd86de2",
@@ -214,7 +221,7 @@ def test_notebook() -> int:
         return esec("notebooks/l5.ipynb depășește 5 MB; graficele trebuie să fie PNG obișnuite, nu animații.")
     sablon, _ = parametri(nb)
     if sablon is None:
-        return esec("nu găsesc celula de parametri a șablonului (URL_DATE sau TEMA); pornește de la un șablon din cursuri-inf/DCTC.")
+        return esec("nu găsesc celula de parametri a șablonului (URL_DATE sau TEMA); porniți de la un șablon din cursuri-inf/DCTC.")
     return ok(f"notebooks/l5.ipynb există, pornit din {sablon}.ipynb, {len(nb['cells'])} celule.")
 
 
@@ -237,15 +244,15 @@ def test_rulare(cu_executie: bool = False) -> int:
         return 1
     erori = [o for o in iesiri(nb) if o.get("output_type") == "error"]
     if erori:
-        return esec(f"rezultatele salvate conțin o eroare ({erori[0].get('ename', '')}); rulează din nou "
-                    "(Runtime > Restart session and run all) și salvează după ce trec toate celulele.")
+        return esec(f"rezultatele salvate conțin o eroare ({erori[0].get('ename', '')}); rulați din nou "
+                    "(Runtime > Restart session and run all) și salvați după ce trec toate celulele.")
     if numar_imagini(nb) < 2:
-        return esec("nu găsesc graficele în rezultatele salvate; rulează tot notebook-ul înainte de salvare "
-                    "și verifică Edit > Notebook settings: rezultatele nu trebuie omise.")
+        return esec("nu găsesc graficele în rezultatele salvate; rulați tot notebook-ul înainte de salvare "
+                    "și verificați Edit > Notebook settings: rezultatele nu trebuie omise.")
     ordine = [c.get("execution_count") for c in celule(nb, "code") if c.get("execution_count") is not None]
     if any(b <= a for a, b in zip(ordine, ordine[1:])):
         return esec("celulele au fost rulate în altă ordine decât cea din notebook; "
-                    "Runtime > Restart session and run all, apoi salvează din nou.")
+                    "Runtime > Restart session and run all, apoi salvați din nou.")
     if cu_executie:
         mesaj = executa()
         if mesaj:
@@ -275,7 +282,7 @@ def test_parametri() -> int:
     if len(schimbati) == 1:
         esec(f"un singur parametru schimbat ({schimbati[0]}); sunt necesari doi, dintre: {', '.join(nume)}.")
         return 2
-    return esec(f"niciun parametru schimbat față de șablon; schimbă doi, dintre: {', '.join(nume)}.")
+    return esec(f"niciun parametru schimbat față de șablon; schimbați doi, dintre: {', '.join(nume)}.")
 
 
 def test_date() -> int:
@@ -290,7 +297,7 @@ def test_date() -> int:
         return esec(f"TEMA = {tema!r} nu este una dintre temele șablonului.")
     url = str(valori.get("URL_DATE", ""))
     if URL_EXEMPLU in url:
-        return esec("URL_DATE arată încă spre datele de exemplu ale șablonului; pune URL-ul raw al fișierului "
+        return esec("URL_DATE arată încă spre datele de exemplu ale șablonului; introduceți URL-ul raw al fișierului "
                     "din data/ al depozitului echipei.")
     m = re.match(r"https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/(?:refs/heads/)?[^/]+/(.+)$", url)
     if not m:
@@ -310,12 +317,12 @@ def test_grafic() -> int:
     imagini = numar_imagini(nb)
     minim = AMPRENTE.get(sablon, {}).get("imagini", 2) + 1
     if noi and imagini >= minim:
-        return ok(f"graficul tău: {len(noi)} celule de cod noi sau modificate care desenează; {imagini} grafice în notebook.")
+        return ok(f"graficul dumneavoastră: {len(noi)} celule de cod noi sau modificate care desenează; {imagini} grafice în notebook.")
     if noi:
-        esec(f"ai o celulă nouă care desenează, dar notebook-ul are doar {imagini} grafice salvate; "
-             "rulează-l complet înainte de salvare.")
+        esec(f"aveți o celulă nouă care desenează, dar notebook-ul are doar {imagini} grafice salvate; "
+             "rulați-l complet înainte de salvare.")
         return 2
-    return esec("nu găsesc o celulă de cod adăugată de tine care să deseneze un grafic.")
+    return esec("nu găsesc o celulă de cod adăugată de dumneavoastră care să deseneze un grafic.")
 
 
 def test_formula() -> int:
@@ -330,8 +337,8 @@ def test_formula() -> int:
             continue
         for f in formule(sursa(c)) - stiute_formule:
             if len(f) >= 3 and re.search(r"\\[A-Za-z]+|[\^_=]", f):
-                return ok(f"formula ta, într-o celulă de text: ${f[:60]}$")
-    return esec("nu găsesc o celulă de text adăugată de tine cu o formulă LaTeX nouă (între $...$).")
+                return ok(f"formula dumneavoastră, într-o celulă de text: ${f[:60]}$")
+    return esec("nu găsesc o celulă de text adăugată de dumneavoastră cu o formulă LaTeX nouă (între $...$).")
 
 
 def test_png() -> int:
@@ -342,7 +349,7 @@ def test_png() -> int:
     png = [f for f in fisiere if f.lower().endswith(".png") and not f.startswith("tests/")]
     if png:
         return ok(f"figuri PNG în depozit: {', '.join(png[:3])}.")
-    return esec("nu există nicio figură PNG în depozit; descarcă graficul tău din Colab și pune-l în notebooks/.")
+    return esec("nu există nicio figură PNG în depozit; descărcați graficul dumneavoastră din Colab și adăugați-l în notebooks/.")
 
 
 TESTE = {
@@ -350,8 +357,8 @@ TESTE = {
     "rulare": (test_rulare, "Rulare completă, fără erori", 2),
     "parametri": (test_parametri, "Doi parametri schimbați", 2),
     "date": (test_date, "Datele echipei", 1),
-    "grafic": (test_grafic, "Un grafic adăugat de tine", 2),
-    "formula": (test_formula, "O formulă LaTeX adăugată de tine", 1),
+    "grafic": (test_grafic, "Un grafic adăugat de dumneavoastră", 2),
+    "formula": (test_formula, "O formulă LaTeX adăugată de dumneavoastră", 1),
     "png": (test_png, "Figura PNG în depozit", 1),
 }
 

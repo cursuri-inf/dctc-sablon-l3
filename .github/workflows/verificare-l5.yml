@@ -28,7 +28,7 @@ jobs:
             echo "gasit=true" >> "$GITHUB_OUTPUT"
           else
             echo "gasit=false" >> "$GITHUB_OUTPUT"
-            echo "Verificarea L5 începe după ce salvezi notebook-ul din laboratorul 5 ca notebooks/l5.ipynb." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "Verificarea L5 începe după ce salvați notebook-ul din laboratorul 5 ca notebooks/l5.ipynb." | tee -a "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Python

@@ -110,7 +110,7 @@ def test_despre_mine() -> int:
 def test_commits() -> int:
     c = commituri_student()
     if len(c) < 3:
-        return esec(f"există {len(c)} {de(len(c))}commit-uri ale tale; sunt necesare cel puțin 3 (verifică și că user.name și user.email din Git sunt cele de pe GitHub).")
+        return esec(f"există {len(c)} {de(len(c))}commit-uri proprii; sunt necesare cel puțin 3 (verificați și că user.name și user.email din Git sunt cele de pe GitHub).")
     return ok(f"{len(c)} {de(len(c))}commit-uri ale studentului.")
 
 
@@ -126,7 +126,7 @@ def test_messages() -> int:
 
 def test_hygiene() -> int:
     if not Path(".gitignore").is_file():
-        return esec(".gitignore lipsește (nu îl șterge din depozit).")
+        return esec(".gitignore lipsește (nu îl ștergeți din depozit).")
     fisiere = [f for f in git("ls-files").splitlines() if f]
     for f in fisiere:
         if re.search(r"(^|/)\.env(\..*)?$|\.pem$|\.key$", f):
@@ -144,7 +144,7 @@ def test_hygiene() -> int:
         if p.suffix.lower() == ".ipynb":  # imaginile din rezultate (base64) nu sunt text de verificat
             text = re.sub(r'"image/(?:png|jpeg)":\s*(?:"[^"]*"|\[[^\]]*\])', "", text)
         if any(t.search(text) for t in TIPARE_SECRETE):
-            return esec(f"posibil secret (parolă, cheie, token) în {f}; șterge-l și schimbă cheia.")
+            return esec(f"posibil secret (parolă, cheie, token) în {f}; ștergeți-l și schimbați cheia.")
     return ok("fără fișiere mari, secrete sau fișiere interzise.")
 
 
